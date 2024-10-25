@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import SearchBar from "../components/SearchBar";
 
 // Define the structure of the fight data
 interface Fight {
@@ -15,6 +16,7 @@ const HomePage: React.FC = () => {
   const [fights, setFights] = useState<Fight[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     async function fetchFights() {
@@ -49,6 +51,7 @@ const HomePage: React.FC = () => {
   return (
     <div style={{ padding: "20px" }}>
       <h1>MMA Fighter Hub</h1>
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <h2>Recent Fights</h2>
 
       {loading ? (
