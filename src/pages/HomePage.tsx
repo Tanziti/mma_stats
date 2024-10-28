@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import SearchBar from "../components/SearchBar";
+import { Tabs, Tab, Box } from "@mui/material";
 
 // Define the structure of the fight data
 interface Fight {
@@ -14,9 +15,11 @@ interface Fight {
 
 const HomePage: React.FC = () => {
   const [fights, setFights] = useState<Fight[]>([]);
+  const [upcomingFights, setUpcomingFights] = useState<Fight[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentTab, setCurrentTab] = useState<number>(0);
 
   useEffect(() => {
     async function fetchFights() {
@@ -37,6 +40,10 @@ const HomePage: React.FC = () => {
         console.log("Fight Data:", response.data);
 
         setFights(response.data);
+
+        const scrapedUpcomingFights = await axios.get("/api/upcoming-fights"); // Call your scraping script's API
+        console.log("Upcoming Fights:", scrapedUpcomingFights.data);
+        setUpcomingFights(scrapedUpcomingFights.data);
       } catch (error) {
         console.error("Error fetching fight data:", error);
         setError("Failed to fetch fight data.");
@@ -47,6 +54,22 @@ const HomePage: React.FC = () => {
 
     fetchFights();
   }, []);
+
+  const filteredFights = fights.filter((fight) =>
+    fight.matchup.some((name) =>
+      name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
+
+  const filteredUpcomingFights = upcomingFights.filter((fight) =>
+    fight.matchup.some((name) =>
+      name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  );
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setCurrentTab(newValue);
+  };
 
   return (
     <div style={{ padding: "20px" }}>
