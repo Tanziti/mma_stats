@@ -41,7 +41,7 @@ const HomePage: React.FC = () => {
         console.log("Fight Data:", response.data);
 
         setFights(response.data);
-
+        //upcoming fights
         const scrapedUpcomingFights = await axios.get("/api/upcoming-fights"); // Call your scraping script's API
         console.log("Upcoming Fights:", scrapedUpcomingFights.data);
         setUpcomingFights(scrapedUpcomingFights.data);
