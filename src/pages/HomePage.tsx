@@ -21,6 +21,7 @@ const HomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentTab, setCurrentTab] = useState<number>(0);
 
+  //getting the api for recent fights
   useEffect(() => {
     async function fetchFights() {
       const options = {
