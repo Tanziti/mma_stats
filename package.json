@@ -13,6 +13,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/material": "^6.1.5",
+    "@playwright/test": "^1.48.2",
     "axios": "^1.7.7",
     "cheerio": "^1.0.0",
     "react": "^18.3.1",

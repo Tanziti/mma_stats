@@ -1,18 +1,29 @@
-// scrapeUpcomingFights.js
-const axios = require("axios");
-const cheerio = require("cheerio");
+// Use ES module syntax with `import`
+import { chromium } from "playwright";
 
 const scrapeUpcomingFights = async () => {
-  try {
-    const { data } = await axios.get("https://www.tapology.com/"); // Replace with the target URL
-    const $ = cheerio.load(data);
-    const fights = [];
+  const browser = await chromium.launch({ headless: true });
+  const page = await browser.newPage();
 
-    // Example scraping logic - adapt based on the target site’s HTML structure
-    $(".fight-card").each((i, element) => {
-      const matchup = $(element).find(".fighters").text().trim();
-      const date = $(element).find(".fight-date").text().trim();
-      fights.push({ matchup, date });
+  try {
+    // Navigate to the initial page
+    await page.goto("https://www.tapology.com/");
+
+    // Click on the link to navigate to the fights page
+    await page.click("a.link-primary-gray"); // Replace with the correct selector
+
+    // Wait for the next page to load
+    await page.waitForSelector(".fight-card");
+
+    // Scrape the required information
+    const fights = await page.evaluate(() => {
+      const fightsData = [];
+      document.querySelectorAll(".fight-card").forEach((card) => {
+        const matchup = card.querySelector(".fighters")?.textContent.trim();
+        const date = card.querySelector(".fight-date")?.textContent.trim();
+        fightsData.push({ matchup, date });
+      });
+      return fightsData;
     });
 
     console.log(fights);
@@ -20,7 +31,10 @@ const scrapeUpcomingFights = async () => {
   } catch (error) {
     console.error("Error scraping upcoming fights:", error);
     return [];
+  } finally {
+    await browser.close();
   }
 };
 
+// Run the scraping function
 scrapeUpcomingFights();
