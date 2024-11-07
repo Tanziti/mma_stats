@@ -4,7 +4,7 @@ const cheerio = require("cheerio");
 
 const scrapeUpcomingFights = async () => {
   try {
-    const { data } = await axios.get("https://example.com/upcoming-fights"); // Replace with the target URL
+    const { data } = await axios.get("https://www.tapology.com/"); // Replace with the target URL
     const $ = cheerio.load(data);
     const fights = [];
 

@@ -21,6 +21,7 @@ const HomePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentTab, setCurrentTab] = useState<number>(0);
 
+  //getting the api for recent fights
   useEffect(() => {
     async function fetchFights() {
       const options = {
@@ -40,6 +41,7 @@ const HomePage: React.FC = () => {
         console.log("Fight Data:", response.data);
 
         setFights(response.data);
+        //upcoming fights
         const scrapedUpcomingFights = await axios.get("/api/upcoming-fights"); // Call your scraping script's API
         console.log("Upcoming Fights:", scrapedUpcomingFights.data);
         setUpcomingFights(scrapedUpcomingFights.data);
@@ -70,71 +72,63 @@ const HomePage: React.FC = () => {
     setCurrentTab(newValue);
   };
 
-  const renderFightList = (fightsToRender: Fight[]) => (
-    <ul>
-      {fightsToRender.map((fight, index) => (
-        <li key={index}>
-          <h3>
-            {fight.matchup[0]} vs. {fight.matchup[1]}
-          </h3>
-          <p>
-            <strong>Wins/Losses/Draws:</strong>
-          </p>
-          <ul>
-            <li>
-              {fight.matchup[0]}:{" "}
-              {fight.tale_of_the_tape["Wins/Losses/Draws"][fight.matchup[0]]}
-            </li>
-            <li>
-              {fight.matchup[1]}:{" "}
-              {fight.tale_of_the_tape["Wins/Losses/Draws"][fight.matchup[1]]}
-            </li>
-          </ul>
-          <p>
-            <strong>Height:</strong>
-          </p>
-          <ul>
-            <li>
-              {fight.matchup[0]}:{" "}
-              {fight.tale_of_the_tape["Height"][fight.matchup[0]]}
-            </li>
-            <li>
-              {fight.matchup[1]}:{" "}
-              {fight.tale_of_the_tape["Height"][fight.matchup[1]]}
-            </li>
-          </ul>
-        </li>
-      ))}
-    </ul>
-  );
-
   return (
     <div style={{ padding: "20px" }}>
       <h1>MMA Fighter Hub</h1>
       <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <h2>Recent Fights</h2>
 
-      <Tabs value={currentTab} onChange={handleTabChange} centered>
-        <Tab label="Recent Fights" />
-        <Tab label="Upcoming Fights" />
-      </Tabs>
-
-      <Box mt={3}>
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : currentTab === 0 ? (
-          filteredFights.length > 0 ? (
-            renderFightList(filteredFights)
-          ) : (
-            <p>No recent fights available.</p>
-          )
-        ) : filteredUpcomingFights.length > 0 ? (
-          renderFightList(filteredUpcomingFights)
-        ) : (
-          <p>No upcoming fights available.</p>
-        )}
-      </Box>
+      {loading ? (
+        <p>Loading recent fights...</p>
+      ) : error ? (
+        <p>{error}</p>
+      ) : fights.length === 0 ? (
+        <p>No fights available.</p>
+      ) : (
+        <ul>
+          {fights.map((fight, index) => (
+            <li key={index}>
+              <h3>
+                {fight.matchup[0]} vs. {fight.matchup[1]}
+              </h3>
+              <p>
+                <strong>Wins/Losses/Draws:</strong>
+              </p>
+              <ul>
+                <li>
+                  {fight.matchup[0]}:{" "}
+                  {
+                    fight.tale_of_the_tape["Wins/Losses/Draws"][
+                      fight.matchup[0]
+                    ]
+                  }
+                </li>
+                <li>
+                  {fight.matchup[1]}:{" "}
+                  {
+                    fight.tale_of_the_tape["Wins/Losses/Draws"][
+                      fight.matchup[1]
+                    ]
+                  }
+                </li>
+              </ul>
+              <p>
+                <strong>Height:</strong>
+              </p>
+              <ul>
+                <li>
+                  {fight.matchup[0]}:{" "}
+                  {fight.tale_of_the_tape["Height"][fight.matchup[0]]}
+                </li>
+                <li>
+                  {fight.matchup[1]}:{" "}
+                  {fight.tale_of_the_tape["Height"][fight.matchup[1]]}
+                </li>
+              </ul>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
