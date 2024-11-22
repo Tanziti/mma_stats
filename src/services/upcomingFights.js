@@ -13,7 +13,7 @@ const scrapeUpcomingFights = async () => {
     await page.click("a.link-primary-gray"); // Replace with the correct selector
 
     // Wait for the next page to load
-    await page.waitForSelector(".fight-card");
+    await page.waitForSelector("a.link-primary-red");
 
     // Scrape the required information
     const fights = await page.evaluate(() => {
