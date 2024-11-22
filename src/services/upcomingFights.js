@@ -14,7 +14,8 @@ const scrapeUpcomingFights = async () => {
 
     // Wait for the next page to load
     await page.waitForSelector("a.link-primary-red");
-
+    //console log to see the data
+    console.log()
     // Scrape the required information
     const fights = await page.evaluate(() => {
       const fightsData = [];
